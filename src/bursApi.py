@@ -1,11 +1,12 @@
 import httpx
 
-def market():
+def market_raw():
     url = 'http://www.tsetmc.com/tsev2/data/MarketWatchPlus.aspx'
-    data = httpx.get(url)
-    content = data.content.decode('utf-8')
-    parts = content.split('@')
-    inst_price = parts[2].split(';')
+    content = httpx.get(url).content.decode('utf-8')
+    return content.split('@')[2].split(';')
+
+def market():
+    inst_price = market_raw()
     market = {}
     for item in inst_price:
         item = item.split(',')
@@ -37,11 +38,7 @@ def market():
     return market
 
 def market_list():
-    url = 'http://www.tsetmc.com/tsev2/data/MarketWatchPlus.aspx'
-    data = httpx.get(url)
-    content = data.content.decode('utf-8')
-    parts = content.split('@')
-    inst_price = parts[2].split(';')
+    inst_price = market_raw()
     market = []
     for item in inst_price:
         item = item.split(',')
@@ -73,11 +70,10 @@ def market_list():
 
 def get_dayprice(id):
     id = int(id)
-    url2 = 'http://www.tsetmc.com/tsev2/chart/data/IntraDayPrice.aspx?i=%i' %id
+    url = 'http://www.tsetmc.com/tsev2/chart/data/IntraDayPrice.aspx?i=%i' %id
     dayprice = []
-    data2 = httpx.get(url2)
-    content2 = data2.content.decode('utf-8').split(';')
-    for item in content2:
+    content = httpx.get(url).content.decode('utf-8').split(';')
+    for item in content:
         item = item.split(',')
         try:
             dayprice.append(dict(
@@ -94,12 +90,11 @@ def get_dayprice(id):
 
 def get_day_general_info(id):
     id = int(id)
-    url7 = 'http://www.tsetmc.com/tsev2/data/instinfodata.aspx?i=%i&c='%id
-    data7 = httpx.get(url7)
-    content7 = data7.content.decode('utf-8').split(';')
-    con1 = content7[0]
+    url = 'http://www.tsetmc.com/tsev2/data/instinfodata.aspx?i=%i&c='%id
+    content = httpx.get(url).content.decode('utf-8').split(';')
+    general_info = content[0]
     infodata = []
-    item = con1.split(',')
+    item = general_info.split(',')
     try:
         if len(item) == 13:
             infodata = (dict(
@@ -114,8 +109,8 @@ def get_day_general_info(id):
                 volume = item[8],
                 value = item[9],
                 c1 = item[10],
-                c2date = item[11],
-                c3 = item[12]
+                c2date = item[11], # georgian numeric date
+                c3 = item[12]  # numeric time
             ))
         if len(item) == 14:
             infodata=(dict(
@@ -130,8 +125,8 @@ def get_day_general_info(id):
                 volume = item[9],
                 value = item[10],
                 c1 = item[11],
-                c2date = item[12],
-                c3 = item[13]
+                c2date = item[12], # georgian numeric date
+                c3 = item[13] # numeric time
             ))
     except:
         pass
@@ -140,10 +135,9 @@ def get_day_general_info(id):
 def get_dayinfo(id):
     id = int(id)
     info = []
-    url7 = 'http://www.tsetmc.com/tsev2/data/instinfodata.aspx?i=%i&c=74+'%id
-    data7 = httpx.get(url7)
-    content7 = data7.content.decode('utf-8').split(';')
-    con1 = content7[0]
+    url = 'http://www.tsetmc.com/tsev2/data/instinfodata.aspx?i=%i&c=74+'%id
+    content = httpx.get(url).content.decode('utf-8').split(';')
+    con1 = content[0] # genral info
     infodata = []
     item = con1.split(',')
     try:
@@ -160,8 +154,8 @@ def get_dayinfo(id):
                 volume = item[8],
                 value = item[9],
                 c1 = item[10],
-                c2date = item[11],
-                c3 = item[12]
+                c2date = item[11], # georgian numeric date
+                c3 = item[12]  # numeric time
             ))
         if len(item) == 14:
             infodata.append(dict(
@@ -176,13 +170,13 @@ def get_dayinfo(id):
                 volume = item[9],
                 value = item[10],
                 c1 = item[11],
-                c2date = item[12],
-                c3 = item[13]
+                c2date = item[12], # georgian numeric date
+                c3 = item[13] # numeric time
             ))
     except:
         pass
     try:
-        item = content7[4].split(',')
+        item = content[4].split(',') # client_typpe_info
         print(len(item))
         infodata.append(dict(
             haghighi_buy_volume = item[0],
@@ -196,7 +190,7 @@ def get_dayinfo(id):
         ))
     except:
         pass
-    con1 = content7[2]
+    con1 = content[2] # book (tablo)
     try:
         info = [{**infodata[0], **infodata[1]}]
     except:
@@ -220,11 +214,10 @@ def get_dayinfo(id):
 
 def get_history(id):
     id = int(id)
-    url8 = 'http://members.tsetmc.com/tsev2/data/InstTradeHistory.aspx?i=%i&Top=99999&A=0'% id
-    data8 = httpx.get(url8)
-    content8 = data8.content.decode('utf-8').split(';')
+    url = 'http://members.tsetmc.com/tsev2/data/InstTradeHistory.aspx?i=%i&Top=99999&A=0'% id
+    content = httpx.get(url).content.decode('utf-8').split(';')
     history = []
-    for item in content8:
+    for item in content:
         item = item.split('@')
         try:
             history.append(dict(
@@ -245,11 +238,10 @@ def get_history(id):
 
 def get_clienttype_history(id):
     id = int(id)
-    url10 = 'http://www.tsetmc.com/tsev2/data/clienttype.aspx?i=%i' %id
-    data10 = httpx.get(url10)
-    content10 = data10.content.decode('utf-8').split(";")
+    url = 'http://www.tsetmc.com/tsev2/data/clienttype.aspx?i=%i' %id
+    content = httpx.get(url).content.decode('utf-8').split(";")
     clienttype = []
-    for item in content10:
+    for item in content:
         item = item.split(',')
         try:
             clienttype.append(dict(
