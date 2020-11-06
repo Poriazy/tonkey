@@ -1,63 +1,81 @@
-import requests
+import httpx
 
-def get_history(id):
-    id = int(id)
-    url8 = 'http://members.tsetmc.com/tsev2/data/InstTradeHistory.aspx?i=%i&Top=99999&A=0'% id
-    data8 = requests.get(url8)
-    content8 = data8.content.decode('utf-8').split(';')
-    history = []
-    for item in content8:
-        item = item.split('@')
-        try:
-            history.append(dict(
-                date = item[0],
-                max_price = item[1],
-                min_price = item[2],
-                close_price = item[3],
-                last_price = item[4],
-                first_price = item[5],
-                yesterday_price = item[6],
-                value = item[7],
-                volume = item[8],
-                count = item[9]
-            ))
-        except:
-            pass
-    return history
-
-def get_clienttype_history(id):
-    id = int(id)
-    url10 = 'http://www.tsetmc.com/tsev2/data/clienttype.aspx?i=%i' %id
-    data10 = requests.get(url10)
-    content10 = data10.content.decode('utf-8').split(";")
-    clienttype = []
-    for item in content10:
+def market():
+    url = 'http://www.tsetmc.com/tsev2/data/MarketWatchPlus.aspx'
+    data = httpx.get(url)
+    content = data.content.decode('utf-8')
+    parts = content.split('@')
+    inst_price = parts[2].split(';')
+    market = {}
+    for item in inst_price:
         item = item.split(',')
-        try:
-            clienttype.append(dict(
-                date = item[0],
-                haghighi_buy_count = item[1],
-                hoghughi_buy_count = item[2],
-                haghighi_sell_count = item[3],
-                hoghughi_sell_count = item[4],
-                haghighi_buy_volume = item[5],
-                hoghughi_buy_volume = item[6],
-                haghighi_sell_volume = item[7],
-                hoghughi_sell_volume = item[8],
-                haghighi_buy_value = item[9],
-                hoghughi_buy_value = item[10],
-                haghighi_sell_value = item[11],
-                hoghughi_sell_value = item[12]
-            ))
-        except:
-            pass
-    return clienttype
+        symbol = item[2]
+        market[symbol] = dict(
+            id = item[0],
+            code = item[1],
+            symbol = item[2],
+            name = item[3],
+            first_price = item[5],
+            close_price = item[6],
+            last_price = item[7],
+            count = item[8],
+            volume = item[9],
+            value = item[10],
+            min_traded_price = item[11],
+            max_treaded_price = item[12],
+            yesterday_price = item[13],
+            eps = item[14],
+            base_volume = item[15],
+            c2 = item[16],
+            table_id = item[17],
+            group_id = item[18],
+            max_allowed_price = item[19],
+            min_allowed_price = item[20],
+            type_of_symbol = item[22],
+            all_count_of_symbol = item[21]
+        )
+    return market
+
+def market_list():
+    url = 'http://www.tsetmc.com/tsev2/data/MarketWatchPlus.aspx'
+    data = httpx.get(url)
+    content = data.content.decode('utf-8')
+    parts = content.split('@')
+    inst_price = parts[2].split(';')
+    market = []
+    for item in inst_price:
+        item = item.split(',')
+        market.append(dict(
+            id = item[0],
+            code = item[1],
+            symbol = item[2],
+            name = item[3],
+            first_price = item[5],
+            close_price = item[6],
+            last_price = item[7],
+            count = item[8],
+            volume = item[9],
+            value = item[10],
+            min_traded_price = item[11],
+            max_treaded_price = item[12],
+            yesterday_price = item[13],
+            eps = item[14],
+            base_volume = item[15],
+            c2 = item[16],
+            table_id = item[17],
+            group_id = item[18],
+            max_allowed_price = item[19],
+            min_allowed_price = item[20],
+            type_of_symbol = item[22],
+            all_count_of_symbol = item[21]
+        ))
+    return market
 
 def get_dayprice(id):
     id = int(id)
     url2 = 'http://www.tsetmc.com/tsev2/chart/data/IntraDayPrice.aspx?i=%i' %id
     dayprice = []
-    data2 = requests.get(url2)
+    data2 = httpx.get(url2)
     content2 = data2.content.decode('utf-8').split(';')
     for item in content2:
         item = item.split(',')
@@ -77,7 +95,7 @@ def get_dayprice(id):
 def get_day_general_info(id):
     id = int(id)
     url7 = 'http://www.tsetmc.com/tsev2/data/instinfodata.aspx?i=%i&c='%id
-    data7 = requests.get(url7)
+    data7 = httpx.get(url7)
     content7 = data7.content.decode('utf-8').split(';')
     con1 = content7[0]
     infodata = []
@@ -119,82 +137,11 @@ def get_day_general_info(id):
         pass
     return infodata
 
-def market():
-    url = 'http://www.tsetmc.com/tsev2/data/MarketWatchPlus.aspx'
-    data = requests.get(url)
-    content = data.content.decode('utf-8')
-    parts = content.split('@')
-    inst_price = parts[2].split(';')
-    market = {}
-    for item in inst_price:
-        item = item.split(',')
-        symbol = item[2]
-        market[symbol] = dict(
-            id = item[0],
-            code = item[1],
-            symbol = item[2],
-            name = item[3],
-            first_price = item[5],
-            close_price = item[6],
-            last_price = item[7],
-            count = item[8],
-            volume = item[9],
-            value = item[10],
-            min_traded_price = item[11],
-            max_treaded_price = item[12],
-            yesterday_price = item[13],
-            eps = item[14],
-            base_volume = item[15],
-            c2 = item[16],
-            table_id = item[17],
-            group_id = item[18],
-            max_allowed_price = item[19],
-            min_allowed_price = item[20],
-            type_of_symbol = item[22],
-            all_count_of_symbol = item[21]
-        )
-    return market
-
-def market_list():
-    url = 'http://www.tsetmc.com/tsev2/data/MarketWatchPlus.aspx'
-    data = requests.get(url)
-    content = data.content.decode('utf-8')
-    parts = content.split('@')
-    inst_price = parts[2].split(';')
-    market = []
-    for item in inst_price:
-        item = item.split(',')
-        market.append(dict(
-            id = item[0],
-            code = item[1],
-            symbol = item[2],
-            name = item[3],
-            first_price = item[5],
-            close_price = item[6],
-            last_price = item[7],
-            count = item[8],
-            volume = item[9],
-            value = item[10],
-            min_traded_price = item[11],
-            max_treaded_price = item[12],
-            yesterday_price = item[13],
-            eps = item[14],
-            base_volume = item[15],
-            c2 = item[16],
-            table_id = item[17],
-            group_id = item[18],
-            max_allowed_price = item[19],
-            min_allowed_price = item[20],
-            type_of_symbol = item[22],
-            all_count_of_symbol = item[21]
-        ))
-    return market
-
 def get_dayinfo(id):
     id = int(id)
     info = []
     url7 = 'http://www.tsetmc.com/tsev2/data/instinfodata.aspx?i=%i&c=74+'%id
-    data7 = requests.get(url7)
+    data7 = httpx.get(url7)
     content7 = data7.content.decode('utf-8').split(';')
     con1 = content7[0]
     infodata = []
@@ -270,4 +217,57 @@ def get_dayinfo(id):
         except:
             pass
     return info
+
+def get_history(id):
+    id = int(id)
+    url8 = 'http://members.tsetmc.com/tsev2/data/InstTradeHistory.aspx?i=%i&Top=99999&A=0'% id
+    data8 = httpx.get(url8)
+    content8 = data8.content.decode('utf-8').split(';')
+    history = []
+    for item in content8:
+        item = item.split('@')
+        try:
+            history.append(dict(
+                date = item[0],
+                max_price = item[1],
+                min_price = item[2],
+                close_price = item[3],
+                last_price = item[4],
+                first_price = item[5],
+                yesterday_price = item[6],
+                value = item[7],
+                volume = item[8],
+                count = item[9]
+            ))
+        except:
+            pass
+    return history
+
+def get_clienttype_history(id):
+    id = int(id)
+    url10 = 'http://www.tsetmc.com/tsev2/data/clienttype.aspx?i=%i' %id
+    data10 = httpx.get(url10)
+    content10 = data10.content.decode('utf-8').split(";")
+    clienttype = []
+    for item in content10:
+        item = item.split(',')
+        try:
+            clienttype.append(dict(
+                date = item[0],
+                haghighi_buy_count = item[1],
+                hoghughi_buy_count = item[2],
+                haghighi_sell_count = item[3],
+                hoghughi_sell_count = item[4],
+                haghighi_buy_volume = item[5],
+                hoghughi_buy_volume = item[6],
+                haghighi_sell_volume = item[7],
+                hoghughi_sell_volume = item[8],
+                haghighi_buy_value = item[9],
+                hoghughi_buy_value = item[10],
+                haghighi_sell_value = item[11],
+                hoghughi_sell_value = item[12]
+            ))
+        except:
+            pass
+    return clienttype
 
