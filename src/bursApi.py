@@ -90,7 +90,7 @@ def get_dayprice(id):
 
 def get_day_general_info(id):
     id = int(id)
-    url = 'http://www.tsetmc.com/tsev2/data/instinfodata.aspx?i=%i&c='%id
+    url = 'http://www.tsetmc.com/tsev2/data/instinfodata.aspx?i=%i&c=' %id
     content = httpx.get(url).content.decode('utf-8').split(';')
     general_info = content[0]
     infodata = []
@@ -135,7 +135,7 @@ def get_day_general_info(id):
 def get_dayinfo(id):
     id = int(id)
     info = []
-    url = 'http://www.tsetmc.com/tsev2/data/instinfodata.aspx?i=%i&c=74+'%id
+    url = 'http://www.tsetmc.com/tsev2/data/instinfodata.aspx?i=%i&c=74+' %id
     content = httpx.get(url).content.decode('utf-8').split(';')
     con1 = content[0] # genral info
     infodata = []
@@ -214,7 +214,7 @@ def get_dayinfo(id):
 
 def get_history(id):
     id = int(id)
-    url = 'http://members.tsetmc.com/tsev2/data/InstTradeHistory.aspx?i=%i&Top=99999&A=0'% id
+    url = 'http://members.tsetmc.com/tsev2/data/InstTradeHistory.aspx?i=%i&Top=99999&A=0' %id
     content = httpx.get(url).content.decode('utf-8').split(';')
     history = []
     for item in content:

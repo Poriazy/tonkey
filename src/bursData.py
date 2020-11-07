@@ -2,29 +2,41 @@ import pandas as pd
 import numpy as np
 import bursApi
 
-market=bursApi.market()
-market_np=np.empty((0,22))
+market = bursApi.market()
+market_np = np.empty((0,22))
+
 for i in market:
-    market_np=np.concatenate((market_np,np.array([list(market[i].values())])))
-market_pd=pd.DataFrame(market_np,columns=list(market[i].keys()))
-def CCI(close, high, low, n, constant): 
-     TP = (high + low + close) / 3 
-     CCI = pd.Series((TP - TP.rolling(n).mean()) / (constant * TP.rolling(n).std()), name = 'CCI_' + str(n)) 
+    market_np = np.concatenate(
+        (market_np, np.array([list(market[i].values())]))
+    )
+market_pd = pd.DataFrame(
+    market_np, columns = list(market[i].keys())
+)
+
+def CCI(close, high, low, n, constant):
+     TP = (high + low + close) / 3
+     CCI = pd.Series(
+         (TP - TP.rolling(n).mean()) / (constant * TP.rolling(n).std()),
+         name = 'CCI_' + str(n)
+     )
      return CCI
 
 def all_data(id):
+    id = int(id)
     all_data={}
-    all_data['dayinfo']=bursApi.get_dayinfo(id)
-    all_data['dayprice']=bursApi.get_dayprice(id)
-    all_data['clienttype_history']=bursApi.get_clienttype_history(id)
+    all_data['dayinfo'] = bursApi.get_dayinfo(id)
+    all_data['dayprice'] = bursApi.get_dayprice(id)
+    all_data['clienttype_history'] = bursApi.get_clienttype_history(id)
     return all_data
+
 def saf_pd(id):
-    day=bursApi.get_dayinfo(int(id))
-    saf_np=np.empty((0,6))
+    id = int(id)
+    day = bursApi.get_dayinfo(id)
+    saf_np = np.empty((0,6))
     for i in range(1,4):
-        saf_np=np.concatenate((saf_np,np.array([list(day[i].values())])))
-    saf_pd=pd.DataFrame(saf_np,columns=list(day[i].keys()))
-    return saf_pd  
+        saf_np = np.concatenate((saf_np, np.array([list(day[i].values())])))
+    saf_pd = pd.DataFrame(saf_np, columns=list(day[i].keys()))
+    return saf_pd
 def general_dayinfo_pd(id):
     general=bursApi.get_day_general_info(int(id))
     general_dayinfo_np=np.empty((0,13))
@@ -46,14 +58,14 @@ def dayprice_pd(id):
     dayprice_pd.iloc[:,1:]= dayprice_pd.iloc[:,1:].astype(np.int64)
     return dayprice_pd
 
-def dayinfo_pd(id):    
+def dayinfo_pd(id):
     day=bursApi.get_dayinfo(int(id))
     dayinfo_np=np.empty((0,13))
     dayinfo_np=np.concatenate((dayinfo_np,np.array([list(day[0].values())])))
     dayinfo_pd=pd.DataFrame(dayinfo_np,columns=list(day[0].keys()))
     return dayinfo_pd
 
-def history_pd(id): 
+def history_pd(id):
     hist=bursApi.get_history(int(id))
     history_np=np.empty((0,10))
     for i in hist:
@@ -63,10 +75,10 @@ def history_pd(id):
     history_pd.iloc[:,1:]= history_pd.iloc[:,1:].astype(float)
     history_pd.iloc[:,1:]= history_pd.iloc[:,1:].astype(np.int64)
     history_pd=history_pd.iloc[::-1]
-    TP = (history_pd['max_price'] + history_pd['min_price'] + history_pd['close_price']) / 3 
+    TP = (history_pd['max_price'] + history_pd['min_price'] + history_pd['close_price']) / 3
     n=20
     constant=0.015
-    history_pd['cci20'] = pd.Series((TP - TP.rolling(n).mean()) / (constant * TP.rolling(n).std()), name = 'CCI_' + str(n)) 
+    history_pd['cci20'] = pd.Series((TP - TP.rolling(n).mean()) / (constant * TP.rolling(n).std()), name = 'CCI_' + str(n))
     history_pd=history_pd.iloc[::-1]
     return history_pd
 
