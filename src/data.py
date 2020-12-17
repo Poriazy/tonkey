@@ -86,8 +86,7 @@ def history_pd(id):
     history_np = np.empty((0, 10))
     for i in hist:
         history_np = np.concatenate(
-            (history_np, np.array([list(i.values())]))
-        )
+            (history_np, np.array([list(i.values())])))
     history_np[:, 1:] = history_np[:, 1:].astype(float)
     history_pd = pd.DataFrame(history_np, columns=list(hist[1].keys()))
     history_pd.iloc[:, 1:] = history_pd.iloc[:, 1:].astype(float)
@@ -99,8 +98,7 @@ def history_pd(id):
     constant = 0.015
     history_pd['cci20'] = pd.Series(
         (TP - TP.rolling(n).mean()) / (constant * TP.rolling(n).std()),
-        name='CCI_' + str(n)
-    )
+        name='CCI_' + str(n))
     history_pd = history_pd.iloc[::-1]
     return history_pd
 
