@@ -19,10 +19,10 @@ def trade(token):
     first_bids = orderbook['btc-tmn']['bids'][0][0]
     sec_bids = orderbook['btc-tmn']['bids'][1][0]
     gap_p = (first_asks - first_bids) / first_asks * 100
-    gap_calc = (int(rootdata['calclast'].replace(",",
-                                                 "")) - int(rootdata['exirlast'].replace(",",
-                                                                                         ""))) / int(rootdata['exirlast'].replace(",",
-                                                                                                                                  ""))
+    gap_calc = (
+        int(rootdata['calclast'].replace(",", "")) -
+        int(rootdata['exirlast'].replace(",", ""))) /
+    int(rootdata['exirlast'].replace(",", ""))
     last_trade = mytrades['data'][0]
     ans.append('fetched')
     if (len(myorders) == 0):

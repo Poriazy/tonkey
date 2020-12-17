@@ -221,7 +221,8 @@ def get_dayinfo(id):
 
 def get_history(id):
     id = int(id)
-    url = 'http://members.tsetmc.com/tsev2/data/InstTradeHistory.aspx?i=%i&Top=99999&A=0' % id
+    base_url = 'http://members.tsetmc.com/tsev2/data/InstTradeHistory.aspx'
+    url = '%s?i=%i&Top=99999&A=0' % (base_url, id)
     content = httpx.get(url).content.decode('utf-8').split(';')
     history = []
     for item in content:
