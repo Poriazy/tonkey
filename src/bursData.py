@@ -1,8 +1,8 @@
 import pandas as pd
 import numpy as np
-import bursApi
+import api
 
-market = bursApi.market()
+market = api.market()
 market_np = np.empty((0,22))
 
 for i in market:
@@ -24,28 +24,28 @@ def CCI(close, high, low, n, constant):
 def all_data(id):
     id = int(id)
     all_data={}
-    all_data['dayinfo'] = bursApi.get_dayinfo(id)
-    all_data['dayprice'] = bursApi.get_dayprice(id)
-    all_data['clienttype_history'] = bursApi.get_clienttype_history(id)
+    all_data['dayinfo'] = api.get_dayinfo(id)
+    all_data['dayprice'] = api.get_dayprice(id)
+    all_data['clienttype_history'] = api.get_clienttype_history(id)
     return all_data
 
 def saf_pd(id):
     id = int(id)
-    day = bursApi.get_dayinfo(id)
+    day = api.get_dayinfo(id)
     saf_np = np.empty((0,6))
     for i in range(1,4):
         saf_np = np.concatenate((saf_np, np.array([list(day[i].values())])))
     saf_pd = pd.DataFrame(saf_np, columns=list(day[i].keys()))
     return saf_pd
 def general_dayinfo_pd(id):
-    general=bursApi.get_day_general_info(int(id))
+    general=api.get_day_general_info(int(id))
     general_dayinfo_np=np.empty((0,13))
     general_dayinfo_np=np.concatenate((general_dayinfo_np,np.array([list(general.values())])))
     general_dayinfo_pd=pd.DataFrame(general_dayinfo_np,columns=list(general.keys()))
     return general_dayinfo_pd
 
 def dayprice_pd(id):
-    day=bursApi.get_dayprice(int(id))
+    day=api.get_dayprice(int(id))
     dayprice_np=np.empty((0,6))
     for i in day:
         dayprice_np=np.concatenate((dayprice_np,np.array([list(i.values())])))
@@ -59,14 +59,14 @@ def dayprice_pd(id):
     return dayprice_pd
 
 def dayinfo_pd(id):
-    day=bursApi.get_dayinfo(int(id))
+    day=api.get_dayinfo(int(id))
     dayinfo_np=np.empty((0,13))
     dayinfo_np=np.concatenate((dayinfo_np,np.array([list(day[0].values())])))
     dayinfo_pd=pd.DataFrame(dayinfo_np,columns=list(day[0].keys()))
     return dayinfo_pd
 
 def history_pd(id):
-    hist=bursApi.get_history(int(id))
+    hist=api.get_history(int(id))
     history_np=np.empty((0,10))
     for i in hist:
         history_np=np.concatenate((history_np,np.array([list(i.values())])))
@@ -83,7 +83,7 @@ def history_pd(id):
     return history_pd
 
 def client_history_pd(id):
-    client_hist=bursApi.get_clienttype_history(int(id))
+    client_hist=api.get_clienttype_history(int(id))
     client_history_np=np.empty((0,13))
     for i in client_hist:
             client_history_np=np.concatenate((client_history_np,np.array([list(i.values())])))
