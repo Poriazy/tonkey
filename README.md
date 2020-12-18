@@ -1,9 +1,10 @@
 # strix-stock
-دریافت و مشاهده اطلاعات بورس ایران در داشبورد شخصی
+
+Receive and view Iran Stock Exchange information in a personal dashboard
 
 data source : `tsetmc.com`
-#
-#### install
+
+## install
 - install python +3
 - run `pip install -r requirements.txt`
 - run `python ./src/app.py`
